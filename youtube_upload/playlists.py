@@ -51,3 +51,25 @@ def add_video_to_playlist(youtube, video_id, title, privacy="public"):
         return add_video_to_existing_playlist(youtube, playlist_id, video_id)
     else:
         debug("Error adding video to playlist")
+
+def add_video_to_playlists(youtube, video_id, titles_arg, privacy="public"):
+    """Add video to playlists (by title) and return the full response."""
+    titles = [title.strip() for title in titles_arg.split(",")]
+    ids = set()
+    for title in titles:
+        id = get_playlist(youtube, title, privacy) or \
+            create_playlist(youtube, title, privacy)
+        if id:
+            ids.add(id)
+    pl = youtube.playlistItems()
+    for id in ids:
+        pl.insert(part="snippet", body={
+            "snippet": {
+                "playlistId": id,
+                "resourceId": {
+                    "kind": "youtube#video",
+                    "videoId": video_id,
+                }
+            }
+        })
+    return pl.execute()

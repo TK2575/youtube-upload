@@ -206,8 +206,8 @@ def run_main(parser, options, args, output=sys.stdout):
             if options.thumb:
                 youtube.thumbnails().set(videoId=video_id, media_body=options.thumb).execute()
             if options.playlist:
-                playlists.add_video_to_playlist(youtube, video_id,
-                                                title=lib.to_utf8(options.playlist), privacy=options.privacy)
+                playlists.add_video_to_playlists(youtube, video_id,
+                                                 title=lib.to_utf8(options.playlist), privacy=options.privacy)
             output.write(video_id + "\n")
     else:
         raise AuthenticationError("Cannot get youtube resource")
@@ -252,7 +252,7 @@ def main(arguments):
     parser.add_option('', '--thumbnail', dest='thumb', type="string", metavar="FILE",
                       help='Image file to use as video thumbnail (JPEG or PNG)')
     parser.add_option('', '--playlist', dest='playlist', type="string",
-                      help='Playlist title (if it does not exist, it will be created)')
+                      help='Playlist titles, separated by comma (if it does not exist, it will be created)')
     parser.add_option('', '--title-template', dest='title_template',
                       type="string", default="{title} [{n}/{total}]", metavar="string",
                       help='Template for multiple videos (default: {title} [{n}/{total}])')
