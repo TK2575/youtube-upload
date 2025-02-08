@@ -54,16 +54,10 @@ def add_video_to_playlist(youtube, video_id, title, privacy="public"):
 
 def add_video_to_playlists(youtube, video_id, titles_arg, privacy="public"):
     """Add video to playlists (by title) and return the full response."""
-    titles = [title.strip() for title in titles_arg.split(",")]
-    ids = set()
-    for title in titles:
-        id = get_playlist(youtube, title, privacy) or \
+    for title in [title.strip() for title in titles_arg.split(",")]:
+        id = get_playlist(youtube, title) or \
             create_playlist(youtube, title, privacy)
-        if id:
-            ids.add(id)
-    pl = youtube.playlistItems()
-    for id in ids:
-        pl.insert(part="snippet", body={
+        youtube.playlistItems().insert(part="snippet", body={
             "snippet": {
                 "playlistId": id,
                 "resourceId": {
@@ -71,5 +65,4 @@ def add_video_to_playlists(youtube, video_id, titles_arg, privacy="public"):
                     "videoId": video_id,
                 }
             }
-        })
-    return pl.execute()
+        }).execute()
